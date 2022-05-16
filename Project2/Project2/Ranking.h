@@ -2,6 +2,7 @@
 #include <cstddef>
 #include<fstream>
 #include<string>
+#include<time.h>
 using namespace std;
 
 class Ranking
@@ -13,7 +14,7 @@ public:
 	void add_film(string film_name, float film_rate, int turn, Ranking* tab); // done 
 	void erase_empty_rates(); // done
 
-	Ranking* flood();  // done 
+	Ranking* flood(int sizee);  // done 
 	Ranking* make_ranking(int size); // done
 	
 	
@@ -26,9 +27,6 @@ public:
 	void swapping(Ranking* tab, int i, int j); // done
 
 	void bucket_sort(Ranking* tab, int len); // done
-
-	
-
-
+	void menu();
 };
 
