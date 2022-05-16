@@ -153,7 +153,7 @@ void Ranking::merge_sort(Ranking* tab, int const left,int const mid, int const r
 			real_tab_place++;
 		}
 
-		/*Petla ktora zapelnia nam prawdziwa tablice jesli petla while z linijki 138 sie skonczyla. 
+		/*Petla ktora zapelnia nam prawdziwa tablice jesli petla while z linijki 139 sie skonczyla. 
 		Przypadek kiedy elementy z prawej tablicy sie skoncza a w lewej tablicy nadal sa elementy*/
 		while (left_counter < left_tab_size) 
 		{
@@ -163,7 +163,7 @@ void Ranking::merge_sort(Ranking* tab, int const left,int const mid, int const r
 			real_tab_place++;
 		}
 
-		/*Petla ktora zapelnia nam prawdziwa tablice jesli funkcja while z linijki 118 sie skonczyla.
+		/*Petla ktora zapelnia nam prawdziwa tablice jesli funkcja while z linijki 139 sie skonczyla.
 		Przypadek kiedy elementy z lewej tablicy sie skoncza a w prawej tablicy nadal sa elementy*/
 		while (right_counter < right_tab_size) 
 		{
@@ -175,6 +175,7 @@ void Ranking::merge_sort(Ranking* tab, int const left,int const mid, int const r
 		delete[] tab_help_left; // uwuwamy z pamieci pomocnicze tablice
 		delete[] tab_help_right;
 }
+
 /*!
 * \brief Funkcja ktora rekurencyjnie dzieli nam nasza tablice na mniejsze tablice do momentu az bedziemy mieli tablice dwuelementowe
 * \param tab=Wskaznik na nasza tablice filmow, begin=poczatek tablicy czyli do posortowania calej tablicy jest to wartosc '0', end=wielkosc tablicy pomniejszona o 1 (pomniejszona o 1 poniewaz obliczanie srodka w srodku tej funkcji potrzebuje zeby byla to wartosc pomniejszona o 1)
@@ -396,14 +397,89 @@ void Ranking::bucket_sort(Ranking* tab, int len)
 	}
 };
 
+/*!
+* \brief Funkcja ktora wyswietla nam mediane rankingu
+* \param tab=wskaznik na tablice filmow, size=wielkosc tablicy
+*/
+void Ranking::median(Ranking* tab, int size)
+{
+	if (size % 2 == 0)
+	{
+		cout << "Mediana rankingu wynosi:" << (tab[(size / 2) - 1].film_rate + tab[size/2].film_rate)/2<< endl;
+	}
+	else
+	{
+		cout << "Mediana rankingu wynosi:" << tab[size / 2].film_rate << endl;
+	}
+}
 
+/*!
+* \brief Funkcja ktora sprawdza nam czy dobrze posortowalismy, jesli sortowanie nie zostalo wykonane prawidlowo to zostaniemy o tym poinformowani 
+* \param tab=wskaznik na tablice filmow, size=wielkosc tablicy
+*/
+void Ranking::check(Ranking* tab, int size)
+{
+	for (int i = 0; i < size-1; i++)
+	{
+		if (tab[i].film_rate > tab[i + 1].film_rate)
+		{
+			cout << "SORTOWANIE NIE POWIODLO SIE" << endl;
+		}
+	}
+}
+
+/*!
+* \brief Funkcja ktora wyswietli nam srednia wartosc oceny filmu
+* \param tab=wskaznik na tablice filmow, size=wielkosc tablicy
+*/
+void Ranking::average_value(Ranking* tab, int size)
+{
+	float average = 0;
+	for (int i = 0; i < size; i++)
+	{
+	    average += tab[i].film_rate;
+	}
+	cout << "Srednia wartosc oceny filmu wynosi:" << average / size << endl;
+}
+
+
+/*!
+* Funkcja ktora odpali nam caly program.
+*/
 void Ranking::menu()
 {
-	Ranking* list = new Ranking;
-	Ranking test;
-	int wybor;
+	/* WAZNE!!!!!!!!!!!!!!!!!!! Opisze tylko jednego "case" poniewaz wszystkie inne sa identyczne */
+	
+
+	Ranking* list = new Ranking; //Tworzenie tablicy dynamicznej
+	Ranking test; //Tworzenie obiektu naszej klasy zeby wywolywac funkcje
+	char tmp[1];
+	int wybor; 
+	cout << "WITAMY W PRZEDPROGRAMIE DO SORTOWANIA FILMOW" << endl;
+	cout << "Czy posiadasz plik tekstowy 'plik_dane.txt' ktory jest przefiltrowany? (nie znajduja sie na nim filmy bez oceny)" << endl;
+	cout << "1.Posiadam taki plik" << endl;
+	cout << "2.Nie posiadam takiego pliku." << endl;
+	begin:
+	cin >> tmp;
+	if (tmp[0] == '1')// Jesli mamy juz przefiltrowany plik to idziemy do prawdziwego programu
+	{
+		goto here;
+	}
+	if (tmp[0]=='2')
+	{
+		test.erase_empty_rates(); //Jesli nie mamy przefiltrowane pliku to stworzy nam taki a potem przejdzie do prawdziwego programu
+		goto here;
+	}
+	if (tmp[0]!= '1' && tmp[0]!='2')
+	{
+		cout << "Prosze wybrac opcje raz jeszcze" << endl; //Jesli zle cos wpisalismy to powrocimy do wybrania opcji czy mamy taki plik czy nie 
+		goto begin;
+	}
+
 	while (1)
 	{
+		here:
+		cout << endl;
 		cout << "PROGRAM DO SORTOWANIA LISTY FILMOW" << endl;
 		cout << "Wybierz ile filmow chcesz posortowac opcje:" << endl;
 		cout << "1.10k" << endl;
@@ -414,30 +490,33 @@ void Ranking::menu()
 		cout << "6.Koniec dzialania programu" << endl;
 		cin >> wybor;
 
-		switch (wybor)
+		switch (wybor) //Na podstawie wyboru odpala sie kolejne casy
 		{
 		case 1:
 		{
-			list=test.flood(10000);
+			list=test.flood(10000); // Tworzenie listy z filmami o wielkosc o 10k
 
-			int wybor1;
+			int wybor1; 
 			cout << "Jakim algorytmem posortowac?" << endl;
 			cout << "1.Merge sort" << endl;
 			cout << "2.Quick sort" << endl;
 			cout << "3.Bucket sort" << endl;
-			cin >> wybor1;
+			cin >> wybor1; // Wybieranie jakim sortowaniem posortowac liste
 
 			switch (wybor1)
 			{
 			case 1:
 			{
 				
-	            double time_start = (double)clock();
-	            test.merge_sort_divide(list, 0, 9999);
-                double time_end = (double)clock();
-	            cout << "Uplynelo = " << (time_end - time_start)/(CLOCKS_PER_SEC) << "s." << endl;
+	            double time_start = (double)clock(); // Odpalamy zegar zeby obliczyc ile zajelo nam sortowanie
+	            test.merge_sort_divide(list, 0, 9999); // Sortowanie algorytem "merge sort"
+                double time_end = (double)clock(); // Zastopowanie zegara 
+	            cout << "Uplynelo = " << (time_end - time_start)/(CLOCKS_PER_SEC) << "s." << endl; // Obliczanie i wyswietlanie naszego czasu sortowania
 				cout << "" << endl;
-				delete[] list;
+				test.median(list, 10000); // Wyswietlanie mediany
+				test.check(list, 10000); // Sprawdzanie czy prawidlowo posortowalismy nasze filmy. Brak informacji zwrotnej oznacza ze sortowanie przebieglo prawidlowo
+				test.average_value(list, 10000); // Wyswietlanie sredniej wartosci oceny filmu
+				delete[] list; // usuwanie listy z filmami z pamieci
 				break;
 			}
 
@@ -448,6 +527,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 10000);
+				test.check(list, 10000);
+				test.average_value(list, 10000);
 				delete[] list;
 				break;
 			}
@@ -459,6 +541,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 10000);
+				test.check(list, 10000);
+				test.average_value(list, 10000);
 				delete[] list;
 				break;
 			}
@@ -483,6 +568,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 100000);
+				test.check(list, 100000);
+				test.average_value(list, 100000);
 				delete[] list;
 				break;
 			}
@@ -494,6 +582,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 100000);
+				test.check(list, 100000);
+				test.average_value(list, 100000);
 				delete[] list;
 				break;
 			}
@@ -501,10 +592,13 @@ void Ranking::menu()
 			case 3:
 			{
 				double time_start = (double)clock();
-				test.bucket_sort(list, 10000);
+				test.bucket_sort(list, 100000);
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 100000);
+				test.check(list, 100000);
+				test.average_value(list, 100000);
 				delete[] list;
 				break;
 			}
@@ -530,6 +624,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 500000);
+				test.check(list, 500000);
+				test.average_value(list, 500000);
 				delete[] list;
 				break;
 			}
@@ -541,6 +638,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 500000);
+				test.check(list, 500000);
+				test.average_value(list, 500000);
 				delete[] list;
 				break;
 			}
@@ -552,6 +652,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 500000);
+				test.check(list, 500000);
+				test.average_value(list, 500000);
 				delete[] list;
 				break;
 			}
@@ -577,6 +680,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 962903);
+				test.check(list, 962903);
+				test.average_value(list, 962903);
 				delete[] list;
 				break;
 			}
@@ -588,6 +694,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, 962903);
+				test.check(list, 962903);
+				test.average_value(list, 962903);
 				delete[] list;
 				break;
 			}
@@ -599,6 +708,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+			    test.median(list, 962903);
+				test.check(list, 962903);
+				test.average_value(list, 962903);
 				delete[] list;
 				break;
 			}
@@ -609,8 +721,13 @@ void Ranking::menu()
 		{
 			int howmany;
 			cout << "Ile filmow chcesz posortowac:";
+			back:
 			cin >> howmany;
-
+			if (howmany > 962903)
+			{
+				cout << "Jest to wiecej filmow niz jest na liscie. Wpisz liczbe filmow raz jeszcze:";
+					goto back;
+			}
 			list = test.flood(howmany);
 
 			int wybor5;
@@ -629,6 +746,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, howmany);
+				test.check(list, howmany);
+				test.average_value(list, howmany);
 				delete[] list;
 				break;
 			}
@@ -640,6 +760,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, howmany);
+				test.check(list, howmany);
+				test.average_value(list, howmany);
 				delete[] list;
 				break;
 			}
@@ -651,6 +774,9 @@ void Ranking::menu()
 				double time_end = (double)clock();
 				cout << "Uplynelo = " << (time_end - time_start) / (CLOCKS_PER_SEC) << "s." << endl;
 				cout << "" << endl;
+				test.median(list, howmany);
+				test.check(list, howmany);
+				test.average_value(list, howmany);
 				delete[] list;
 				break;
 			}
@@ -671,5 +797,5 @@ void Ranking::menu()
 		}
 
 	}
-
-}
+	
+};
