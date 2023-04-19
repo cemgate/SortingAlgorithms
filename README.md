@@ -24,10 +24,10 @@ The user can use this project to learn how different sorting algorithms work and
 The project can also be expanded with additional sorting algorithms or features, such as displaying the sorted movies in a specific order or allowing the user to search for a specific movie based on its name or rating.
 
 The project uses the following standard libraries:
--iostream
--fstream
--vector
--string
--algorithm
--chrono.
+- iostream
+- fstream
+- vector
+- string
+- algorithm
+- chrono.
 
