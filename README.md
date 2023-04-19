@@ -7,6 +7,7 @@ The project focuses on sorting movies based on their rankings (rating from 1 to 
  - merge sort
  - quick sort 
  - bucket sort
+ 
  The program reads a data file containing the names of the movies and their corresponding ratings. The movies and ratings are then loaded into a vector of structures. 
  The movie structure contains a field for the name and rating.
 
